@@ -10,7 +10,7 @@ Template.postSubmit.events({
 
     Meteor.call('post', post, function(error, id) {
       if (error)
-        return alert(error.reason)
+        throw throwError(error.reason)
 
       Router.go('/', {_id: id});
     });
