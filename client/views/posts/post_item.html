@@ -2,6 +2,7 @@
   <div class="post">
     <div class="post-content">
       <h3><a href="{{url}}">{{title}}</a><span>{{domain}}</span></h3>
+      <p>submitted by {{author}} {{#if ownPost}} <a href="/posts/{{_id}}/edit">Edit</a>{{/if}}</p>
     </div>
     <a href="/posts/{{_id}}" class="discuss btn">Discuss</a>
   </div> 
