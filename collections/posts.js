@@ -1,58 +1,67 @@
 Posts = new Meteor.Collection('posts');
 
 Meteor.methods({
-  post:function(postAttributes){
-    var user = Meteor.user();
-    var postWithSameLink = Posts.findOne({url: postAttributes.url});
-
-    if (!user)
-      throw new Meteor.Error(401, "You need to login to post new stories");
-    
-    if (!postAttributes.title)
-      throw new Meteor.Error(422, "Please fill in a headline");
-    
-    if (postAttributes.url && postWithSameLink) {
-      throw new Meteor.Error(302, 
-      "The link has already been posted", 
-      postWithSamelink);      
-    }
-
-    var post = _.extend(_.pick(postAttributes, "url", "title", "message"), {
-       title: postAttributes.title + (this.isSimulation ? "(client)" : "(server)"),
-       userId: user._id, 
-       author: user.email, 
-       submitted: new Date().getTime() 
+  postInsert:function(postAttributes){
+    check(this.userId, String); 
+    check(postAttributes, {
+      title: String, 
+      url: String
     });
 
-    if (! this.isSimulation) {
-      var Future = Npm.require("fibers/future");
-      var future = new Future(); 
-      Meteor.setTimeout(function() {
-        future.return();
-      }, 5 * 1000); 
-      future.wait();
+    var errors = validatePost(postAttributes);
+      if(errors.title || errors.url)
+        throw new Meteor.Error('invalid-post', "You must set a valid title and url for your post");
+
+    if (Meteor.isServer) {
+      postAttributes.title +="(server)";
+      Meteor._sleepForMs(5000);
+    }
+    else {
+      postAttributes.title +="(client)";
     }
 
+    var user = Meteor.user();
+    var postWithSameLink = Posts.findOne({ url: postAttributes.url}); 
+    if (postWithSameLink) { 
+      return { 
+        postExists: true, _id: postWithSameLink._id 
+      } 
+    }
+
+    var post = _.extend(postAttributes, {
+      name: user._id, 
+      author: user.username, 
+      submitted: new Date()
+    });
 
     var postId = Posts.insert(post);
-      return postId;
+
+    return {_id: postId};
+
   }
 });
 
+    validatePost = function(post) {
+      var errors = {};
+
+      if (!post.title)
+        errors.title = "Please fill in a headline";
+      if(!post.url)
+        errors.url = "Please fill in a url";
+
+      return errors;
+    }
+
+
 Posts.allow({
-  
-  update:function(userId, post){
-    return 
-      ownsDocument(userId, post); }, 
-    
-     remove: function(userId, post){
-      return ownsDocument(userId, post); 
-    },
-});
+  update: function(userId, post){
+    return ownsDocument(userId, post); },
+  remove: function(userId, post) { return ownsDocument(userId, post); }
+  });
 
 Posts.deny({
-  update: function(userId, post, fieldNames) {
-    return 
-    (_.without(fieldNames, 'url','title').length > 0);
+  update: function(userId, post, fieldNames, modifier){
+    var errors = validatePost(modifier.$set)
+    return errors.title || errors.url;
   }
 });

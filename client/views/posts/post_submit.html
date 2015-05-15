@@ -1,25 +1,27 @@
 <template name="postSubmit">
-  <form class="main">
-    <div class="control-group">
+  <form class="main form page">
+    <div class="form-group {{errorClass 'url'}}">
       <label class="control-label" for="url">URL</label>
       <div class="controls">
-        <input name="url" type="text" value="" placeholder="Your URL"/>
+        <input name="url" type="text" value="" placeholder="Your URL" class="form-control"/>
+          <span class="help-block">{{errorMessage 'url'}}</span>
       </div> 
     </div>
 
-    <div class="control-group">
+    <div class="form-group {{errorClass 'title'}}">
       <label class="control-label" for="title">Title</label>
       <div class="controls">
-        <input name="title" type="text" value="" placeholder="Name your post"> 
+        <input name="title" type="text" value="" placeholder="Name your post" class="form-control">
+        <span class="help-block">{{errorMessage 'title'}}</span> 
       </div>
     </div>    
 
-    <div class="control-group">
+ <!--    <div class="form-group {{errorClass 'message'}}">
       <label class="control-label" for="message">Message</label>
       <div class="controls">
-        <textarea name="message" type="text" value=""></textarea>
+        <input name="message" type="text" value="" placeholder="Enter your message" class="form-control">
       </div>
-    </div>  
+    </div>   -->
 
     <div class="control-group"> 
       <div class="controls"> 

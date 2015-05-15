@@ -9,7 +9,11 @@
       <a class="brand" href="/">Microscope</a>
       <div class="nav-collapse collapse">
         <ul class="nav">
-          <li><a href="/submit"></a> </li>
+          {{#if currentUser}} 
+            <li>
+              <a href="/submit" class="discuss btn">Submit</a> 
+            </li>
+          {{/if}}
         </ul>
         <ul class="nav pull-right">
           <li>{{>loginButtons}}</li>  
