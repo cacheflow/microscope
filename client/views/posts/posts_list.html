@@ -1,9 +1,13 @@
 <template name="postsList">
   {{>layout}}
-<!--   {{>errors}}
- -->  <div class="posts">
+  <div class="posts">
     {{#each posts}}
       {{> postItem}}
     {{/each}}  
   </div>
+  <ul class="comments">
+    {{#each comments}}
+    {{> commentItem}}
+    {{/each}}
+  </ul>
 </template>     

@@ -33,8 +33,8 @@ iron:router@1.0.7
 iron:url@1.0.7
 jquery@1.11.3_2
 json@1.0.3
-l.alexander10:errors@0.0.1
 launch-screen@1.0.2
+lexalexander:errors@0.0.1
 livedata@1.0.13
 localstorage@1.0.3
 logging@1.0.7

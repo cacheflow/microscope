@@ -29,7 +29,7 @@ Template.postEdit.events({
       return Session.set('postEditErrors', errors);
     Posts.update(currentPostId, {$set: postProperties}, function(error) {
      if (error){
-      throwError(error.reason);
+      Errors(error.reason);
      } 
      else {
       Router.go('/', {_id: currentPostId});
